@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package message;
+
+message MessageHeader {
+    // the message id
+    string ID = 1;
+    // message type
+    string MessageType = 2;
+}
+
+message Message {
+    MessageHeader header = 1;
+    bytes Content = 2;
+}
