@@ -1,5 +1,9 @@
 package types
 
+import (
+	"net/http"
+	"github.com/wssocket/model"	
+)
 
 const (
 
@@ -11,3 +15,8 @@ const (
 	// connection only can be used for message and stream
 	UseTypeShare UseType = "shr"	
 )
+
+type Handler interface {
+	MessageProcess(Header http.Header, msg *model.Message)
+}
+
