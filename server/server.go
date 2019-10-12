@@ -1,8 +1,10 @@
 package server
 
 import (
+	"io"
 	"crypto/tls"
 	"net"
+	"time"
 	"net/http"
 
 	wstype "github.com/jwzl/wssocket/types"	
@@ -20,7 +22,7 @@ type Server struct {
 	Addr             string
 	// When http recieive the request from client, then it 
 	// means that connection is created.
-	ConnNotify       ConnNotify		//optional.
+	ConnNotify       wstype.ConnNotify		//optional.
 	AutoRoute        bool
 	//HandShake timeout
 	HandshakeTimeout time.Duration
@@ -45,7 +47,7 @@ type Server struct {
 func (s *Server) getTLSConfig(cert, key string) (*tls.Config, error) {
 	var tlsConfig *tls.Config
 
-	if s.tlsConfig == nil {
+	if s.TLSConfig == nil {
 		tlsConfig = &tls.Config{}
 	} else {
 		tlsConfig = s.TLSConfig.Clone()

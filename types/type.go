@@ -9,14 +9,15 @@ const (
 
 	// connection use type
 	// connection only for message
-	UseTypeMessage UseType = "msg"
+	UseTypeMessage string = "msg"
 	// connection only for stream
-	UseTypeStream UseType = "str"
+	UseTypeStream string = "str"
 	// connection only can be used for message and stream
-	UseTypeShare UseType = "shr"	
+	UseTypeShare string = "shr"	
 )
 
 type Handler interface {
 	MessageProcess(Header http.Header, msg *model.Message)
 }
 
+type ConnNotify func (interface{}) 

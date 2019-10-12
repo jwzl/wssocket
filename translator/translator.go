@@ -56,7 +56,7 @@ func (mtc *MessageTransCoding) Decode(raw []byte, msg interface{}) error {
 
 	protoMsg := message.Message{}
 	//unmarshall the data to  protocol buf message.
-	err := proto.Unmarshal(raw, &protoMessage)
+	err := proto.Unmarshal(raw, &protoMsg)
 	if err != nil {
 		fmt.Errorf("protocol buf Unmarshal err!")
 		return err
@@ -70,7 +70,7 @@ func (mtc *MessageTransCoding) Decode(raw []byte, msg interface{}) error {
 func (mtc *MessageTransCoding) Encode(msg interface{}) ([]byte, error) {
 	modelMsg, ok := msg.(*model.Message)
 	if !ok {
-		return fmt.Errorf("bad msg type")
+		return nil, fmt.Errorf("bad msg type")
 	}
 
 	protoMsg := message.Message{
@@ -82,7 +82,7 @@ func (mtc *MessageTransCoding) Encode(msg interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	msgBytes, err :=proto.marshal(&protoMsg)
+	msgBytes, err :=proto.Marshal(&protoMsg)
 	if err != nil {
 		fmt.Errorf("protocol buf marshal err!")
 		return nil, err

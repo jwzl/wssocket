@@ -2,8 +2,11 @@ package server
 
 import (
 	"log"
+	"io"	
 	"os"
+	"fmt"
 	"net"
+	"time"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -23,10 +26,10 @@ type WSServer struct {
 	conn	*websocket.Conn
 }
 
-func NewWSServer(ops Server) *WSServer {
+func NewWSServer(opts Server) *WSServer {
 
 	server := http.Server{
-		Addr: 		ops.Addr,
+		Addr: 		opts.Addr,
 		TLSConfig: 	opts.TLSConfig,
 		ErrorLog:	log.New(os.Stderr, "", log.LstdFlags),
 	}
@@ -74,7 +77,7 @@ func (wss *WSServer) ServerHTTP(w http.ResponseWriter, r *http.Request){
 
 	// Connection callback.
 	if wss.options.ConnNotify != nil {
-		wss.options.ConnNotify()
+		wss.options.ConnNotify(wss.options)
 	}
 
 	//Handle connection
@@ -180,7 +183,7 @@ func (wss *WSServer) Write(p []byte) (int, error) {
 
 // WSS 's WriteMessage
 func (wss *WSServer) WriteMessage(msg *model.Message) error {
-	return encodeAndPackPackage(msg)
+	return wss.encodeAndPackPackage(msg)
 }
 
 // Set ReadDeadline 
@@ -216,12 +219,12 @@ func (wss *WSServer) handleRawData(){
 		return 
 	}
 
-	if wss.options.AutoRoute != nil {
+	if !wss.options.AutoRoute {
 		return 
 	}
 
 	//Read the raw data
-	_, err := io.Copy(wss.options.Consumer, wss.conn)
+	_, err := io.Copy(wss.options.Consumer, wss)
 	if err != nil {
 		log.Println("failed to copy data, error:", err)
 		wss.conn.Close()
