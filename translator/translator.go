@@ -4,8 +4,8 @@ import(
 	"fmt"
 	"encoding/json"
 
-	"github.com/wssocket/model"	
-	"github.com/wssocket/protoc/message"	
+	"github.com/jwzl/wssocket/model"	
+	"github.com/jwzl/wssocket/protoc/message"	
 	"github.com/golang/protobuf/proto"
 )
 
