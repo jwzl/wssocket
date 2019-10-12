@@ -5,8 +5,8 @@ import (
 	"net"
 	"net/http"
 
-	wstype "github.com/wssocket/types"	
-	"github.com/wssocket/model"			
+	wstype "github.com/jwzl/wssocket/types"	
+	"github.com/jwzl/wssocket/model"			
 )
 
 // the filter function before upgrading the http to websocket

@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	wstype "github.com/wssocket/types"	
-	"github.com/wssocket/model"	
-	"github.com/wssocket/packer"	
-	"github.com/wssocket/translator"		
+	wstype "github.com/jwzl/wssocket/types"	
+	"github.com/jwzl/wssocket/model"	
+	"github.com/jwzl/wssocket/packer"	
+	"github.com/jwzl/wssocket/translator"		
 )
 
 type WSServer struct {

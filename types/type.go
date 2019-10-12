@@ -2,7 +2,7 @@ package types
 
 import (
 	"net/http"
-	"github.com/wssocket/model"	
+	"github.com/jwzl/wssocket/model"	
 )
 
 const (
