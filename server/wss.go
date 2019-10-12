@@ -13,44 +13,21 @@ import (
 	"github.com/wssocket/translator"		
 )
 
-// the filter function before upgrading the http to websocket
-type WSFilterFunc func(w http.ResponseWriter, r *http.Request) bool
-// server options
-type Options struct {
-	// Addr optionally specifies the TCP address for the server to listen on,
-	// in the form "host:port". If empty, ":http" (port 80) is used.
-	// The service names are defined in RFC 6335 and assigned by IANA.
-	// See net.Dial for details of the address format.
-	Addr             string
-	//websocket use 
-	ConnUse 		 string
-	// TLSConfig optionally provides a TLS configuration for use
-	// by ServeTLS and ListenAndServeTLS.
-	TLS              *tls.Config
-	ConnNotify       ConnNotify
-	ConnMgr          *cmgr.ConnectionManager
-	ConnNumMax       int
-	AutoRoute        bool
-	HandshakeTimeout time.Duration
-	Handler          wstype.Handler
-	Consumer         io.Writer
-	// the necessary processing before upgrading
-	Filter 			 WSFilterFunc
-}
-
 type WSServer struct {
 	WriteDeadline time.Time
 	ReadDeadline  time.Time
-	options Options
+	//websocket use 
+	ConnUse	string
+	options Server
 	server  *http.Server
 	conn	*websocket.Conn
 }
 
-func NewWSServer(ops Options) *WSServer {
+func NewWSServer(ops Server) *WSServer {
 
 	server := http.Server{
 		Addr: 		ops.Addr,
-		TLSConfig: 	opts.TLS,
+		TLSConfig: 	opts.TLSConfig,
 		ErrorLog:	log.New(os.Stderr, "", log.LstdFlags),
 	}
 
@@ -64,6 +41,7 @@ func NewWSServer(ops Options) *WSServer {
 
 	return wsServer
 }
+
 
 // Convert http server to websocket server
 func (wss *WSServer) upgrade(w http.ResponseWriter, r *http.Request) *websocket.Conn {
@@ -127,7 +105,7 @@ func (wss *WSServer) unpackPackageAndDecode(msg *model.Message) error {
 }
 
 // let model message convert to protocol buf message, then package this msg. 
-func (wss *WSServer) EncodeAndPackPackage(msg *model.Message) error {
+func (wss *WSServer) encodeAndPackPackage(msg *model.Message) error {
 	rawData, err := translator.NewTransCoding().Encode(msg)
 	if err != nil {
 		fmt.Errorf("failed to Encode, error: %+v", err)
@@ -169,7 +147,9 @@ func (wss *WSServer) handleMessage(){
 		// put the messages into fifo and wait for reading
 
 		//let wss handler to process message.
-		wss.options.Handler.MessageProcess(nil, msg)
+		if wss.options.Handler != nil && wss.options.Handler.MessageProcess != nil {
+			wss.options.Handler.MessageProcess(nil, msg)
+		}
 	}
 }
 
@@ -198,9 +178,9 @@ func (wss *WSServer) Write(p []byte) (int, error) {
 	return len(p), err
 }
 
-// Write model message to wesocket
+// WSS 's WriteMessage
 func (wss *WSServer) WriteMessage(msg *model.Message) error {
-	return EncodeAndPackPackage(msg)
+	return encodeAndPackPackage(msg)
 }
 
 // Set ReadDeadline 
