@@ -6,7 +6,9 @@ import (
 )
 
 const (
-
+	// connection stat
+	StatConnected    = "connected"
+	StatDisconnected = "disconnected"
 	// connection use type
 	// connection only for message
 	UseTypeMessage string = "msg"
