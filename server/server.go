@@ -1,8 +1,11 @@
 package server
 
 import (
+	"io/ioutil"
 	"io"
+	"fmt"	
 	"crypto/tls"
+	"crypto/x509"
 	"net"
 	"time"
 	"net/http"
@@ -42,6 +45,33 @@ type Server struct {
 	server			 *WSServer
 }
 
+// create tls config
+func (s *Server) CreateTLSConfig(caFile, certFile, keyFile string) (*tls.Config, error) {
+	pool := x509.NewCertPool()
+	rootCA, err := ioutil.ReadFile(caFile)
+	if err != nil {
+		return nil, err
+	}	
+	ok := pool.AppendCertsFromPEM(rootCA)
+	if !ok {
+		return nil, fmt.Errorf("fail to load ca content")
+	}
+	
+	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+	if err != nil {
+		return nil, err
+	}
+
+	tlsConfig := &tls.Config{
+		ClientCAs:    pool,
+		ClientAuth:   tls.RequestClientCert,
+		Certificates: []tls.Certificate{cert},
+		MinVersion:   tls.VersionTLS12,
+		CipherSuites: []uint16{tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256},
+	}
+
+	return tlsConfig, nil
+}
 
 // get tls config
 func (s *Server) getTLSConfig(cert, key string) (*tls.Config, error) {
