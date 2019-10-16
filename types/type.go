@@ -2,7 +2,8 @@ package types
 
 import (
 	"net/http"
-	"github.com/jwzl/wssocket/model"	
+	"github.com/jwzl/wssocket/model"
+	"github.com/jwzl/wssocket/conn"	
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 )
 
 type Handler interface {
-	MessageProcess(Header http.Header, msg *model.Message)
+	MessageProcess(Header http.Header, msg *model.Message, c *conn.Connection)
 }
 
 type ConnNotify func (interface{}) 
