@@ -16,6 +16,9 @@ import(
 	"github.com/jwzl/wssocket/translator"
 )
 
+type Handler interface {
+	MessageProcess(Header http.Header, msg *model.Message, c *Connection)
+}
 // connection states
 // TODO: add connection state filed
 type ConnectionState struct {
@@ -26,7 +29,7 @@ type ConnectionState struct {
 
 type Connection struct {
 	//Message revice handler. 
-	Handler          wstype.Handler
+	Handler  Handler
 	// auto route flag
 	AutoRoute bool
 	// client type
@@ -93,7 +96,7 @@ func (c *Connection) handleMessage(){
 
 		//let c handler to process message.
 		if c.Handler != nil && c.Handler.MessageProcess != nil {
-			c.MessageProcess(c.State.Header, msg, c)
+			c.Handler.MessageProcess(c.State.Header, msg, c)
 		}
 	}
 }
@@ -114,7 +117,7 @@ func (c *Connection) unpackPackageAndDecode(msg *model.Message) error {
 func (c *Connection) encodeAndPackPackage(msg *model.Message) error {
 	rawData, err := translator.NewTransCoding().Encode(msg)
 	if err != nil {
-		fmt.Errorf("failed to Encode, error: %+v", err)
+		log.Errorf("failed to Encode, error: %+v", err)
 		return err
 	}
 

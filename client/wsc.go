@@ -1,8 +1,9 @@
 package client
 
 import (
-
+	
 	"fmt"
+	"net/http"	
 	"io/ioutil"
 
 	"github.com/jwzl/wssocket/conn"
@@ -36,26 +37,28 @@ func (wsc *WSClient) Connect(serverAddr string, requestHeader http.Header)(*conn
 	header := requestHeader
 	header.Add("ConnectionUse", string(wsc.options.ConnUse))
 
+	log.Infof("Connect %s", serverAddr)
 	wsConn, response, err := wsc.dialer.Dial(serverAddr, header)
 	if err == nil {
 		log.Infof("dialer connect %s successful", serverAddr)
 
-		//call onconnect callback
-		if wsc.options.Connected {
-			wsc.options.Connected(wsConn, response)	
-		}
-		// return the connection 
-		return &conn.Connection{
+		connection := &conn.Connection{
 			ConnUse: wsc.options.ConnUse,
 			Consumer:  wsc.options.Consumer,
 			Handler:  wsc.options.Handler,  
 			AutoRoute:  wsc.options.AutoRoute,
 			State: &conn.ConnectionState{
 				State:  wstype.StatConnected,
-				Headers: conn.DeepCopyHeader(header),	
+				Header: conn.DeepCopyHeader(header),	
 			},
 			Conn: wsConn, 
-		}, nil
+		}
+		//call onconnect callback
+		if wsc.options.Connected != nil {
+			wsc.options.Connected(connection, response)	
+		}
+		// return the connection 
+		return connection, nil
 	}
 
 	//failed.

@@ -13,7 +13,8 @@ import (
 	wstype "github.com/jwzl/wssocket/types"	
 	"github.com/jwzl/wssocket/model"	
 	"github.com/jwzl/wssocket/packer"	
-	"github.com/jwzl/wssocket/translator"		
+	"github.com/jwzl/wssocket/translator"
+	Log"github.com/kubeedge/beehive/pkg/common/log"		
 )
 
 type WSServer struct {
@@ -67,7 +68,7 @@ func (wss *WSServer) ServerHTTP(w http.ResponseWriter, r *http.Request){
 			return
 		}
 	} 
-
+	Log.Infof("request coming....%v", r)
 	WsConn := wss.upgrade(w, r)
 	if WsConn == nil {
 		return	
@@ -151,7 +152,7 @@ func (wss *WSServer) handleMessage(){
 
 		//let wss handler to process message.
 		if wss.options.Handler != nil && wss.options.Handler.MessageProcess != nil {
-			wss.options.Handler.MessageProcess(nil, msg)
+			wss.options.Handler.MessageProcess(nil, msg, nil)
 		}
 	}
 }

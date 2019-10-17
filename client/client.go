@@ -2,14 +2,14 @@ package client
 
 import (
 	"io"
+	"net"
 	"sync"
 	"time"
 	"net/http"
 	"crypto/tls"
 	
 	"github.com/jwzl/wssocket/conn"
-	"github.com/gorilla/websocket"
-	wstype "github.com/jwzl/wssocket/types"	
+	"github.com/jwzl/wssocket/model"
 )
 
 
@@ -23,11 +23,11 @@ type Options struct {
 	// auto route flag
 	AutoRoute bool
 	//Message revice handler. 
-	Handler          wstype.Handler
+	Handler          conn.Handler
 	// this is for stream message
 	Consumer         io.Writer		////optional.
 	// Connected callback
-	Connected	func(*websocket.Conn, *http.Response)
+	Connected	func(*conn.Connection, *http.Response)
 }
 
 //Client

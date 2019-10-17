@@ -9,7 +9,8 @@ import (
 	"net"
 	"time"
 	"net/http"
-
+	
+	"github.com/jwzl/wssocket/conn"
 	wstype "github.com/jwzl/wssocket/types"	
 	"github.com/jwzl/wssocket/model"			
 )
@@ -31,7 +32,7 @@ type Server struct {
 	HandshakeTimeout time.Duration
 
 	//Message revice handler. 
-	Handler          wstype.Handler
+	Handler          conn.Handler
 
 	// this is for stream message
 	Consumer         io.Writer		////optional.
