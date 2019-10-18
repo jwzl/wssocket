@@ -6,10 +6,10 @@ import (
 	"net/http"	
 	"io/ioutil"
 
+	"k8s.io/klog"
 	"github.com/jwzl/wssocket/conn"
 	"github.com/gorilla/websocket"
-	wstype "github.com/jwzl/wssocket/types"	
-	"github.com/kubeedge/beehive/pkg/common/log"
+	wstype "github.com/jwzl/wssocket/types"
 )
 
 type WSClient struct {
@@ -37,10 +37,10 @@ func (wsc *WSClient) Connect(serverAddr string, requestHeader http.Header)(*conn
 	header := requestHeader
 	header.Add("ConnectionUse", string(wsc.options.ConnUse))
 
-	log.Infof("Connect %s", serverAddr)
+	klog.Infof("Connect %s", serverAddr)
 	wsConn, response, err := wsc.dialer.Dial(serverAddr, header)
 	if err == nil {
-		log.Infof("dialer connect %s successful", serverAddr)
+		klog.Infof("dialer connect %s successful", serverAddr)
 
 		connection := &conn.Connection{
 			ConnUse: wsc.options.ConnUse,
@@ -74,6 +74,6 @@ func (wsc *WSClient) Connect(serverAddr string, requestHeader http.Header)(*conn
 		return nil, err
 	} 
 
-	log.Errorf("dial websocket error(%+v), response message: %s", err, resp)
+	klog.Errorf("dial websocket error(%+v), response message: %s", err, resp)
 	return nil, err
 }

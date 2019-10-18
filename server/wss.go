@@ -8,13 +8,13 @@ import (
 	"net"
 	"time"
 	"net/http"
+	"k8s.io/klog"
 
 	"github.com/gorilla/websocket"
 	wstype "github.com/jwzl/wssocket/types"	
 	"github.com/jwzl/wssocket/model"	
 	"github.com/jwzl/wssocket/packer"	
-	"github.com/jwzl/wssocket/translator"
-	Log"github.com/kubeedge/beehive/pkg/common/log"		
+	"github.com/jwzl/wssocket/translator"	
 )
 
 type WSServer struct {
@@ -54,7 +54,7 @@ func (wss *WSServer) upgrade(w http.ResponseWriter, r *http.Request) *websocket.
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("failed to upgrade to websocket")
+		klog.Errorf("failed to upgrade to websocket")
 		return nil
 	}
 
@@ -67,7 +67,7 @@ func (wss *WSServer) ServerHTTP(w http.ResponseWriter, r *http.Request){
 			return
 		}
 	} 
-	Log.Infof("request coming....%v", r)
+	klog.Infof("request coming....%v", r)
 	WsConn := wss.upgrade(w, r)
 	if WsConn == nil {
 		return	

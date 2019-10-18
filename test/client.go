@@ -3,11 +3,11 @@ package main
 import(
 	"time"
 	"net/http"
+	"k8s.io/klog"
 
 	"github.com/jwzl/wssocket/client"
 	"github.com/jwzl/wssocket/conn"
 	"github.com/jwzl/wssocket/model"
-	"github.com/kubeedge/beehive/pkg/common/log"
 	wstype "github.com/jwzl/wssocket/types"	
 )
 
@@ -17,12 +17,12 @@ func ( mh *MessageHandler ) MessageProcess(Header http.Header, msg *model.Messag
 }
 
 func Connected (conn *conn.Connection, resp *http.Response){
-	log.Infof("Connected!")
+	klog.Infof("Connected!")
 }
 func main() {
 	tlsConfig, err := client.CreateTLSConfig("/etc/edgedev/certs/edgedev.crt", "/etc/edgedev/certs/edgedev.key")
 	if err != nil {
-		log.Errorf("Create tlsconfig err")
+		klog.Errorf("Create tlsconfig err")
 		return
 	}
 
@@ -41,9 +41,9 @@ func main() {
 		RequestHeader: httpHeader,
 	}
 
-	log.Infof("Start websocket client...")
+	klog.Infof("Start websocket client...")
 	wsClient.Start()
-	log.Infof("Connect to the server...")
+	klog.Infof("Connect to the server...")
 	err = wsClient.Connect("wss://127.0.0.1:443/")
 	if err != nil {
 		log.Infof("Connect failed, %v", err)

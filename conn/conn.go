@@ -7,10 +7,9 @@ import(
 	"net"
 	"time"
 	"net/http"
-
+	"k8s.io/klog"
 	"github.com/gorilla/websocket"
-	wstype "github.com/jwzl/wssocket/types"	
-	"github.com/kubeedge/beehive/pkg/common/log"
+	wstype "github.com/jwzl/wssocket/types"
 	"github.com/jwzl/wssocket/model"
 	"github.com/jwzl/wssocket/packer"	
 	"github.com/jwzl/wssocket/translator"
@@ -46,14 +45,14 @@ type Connection struct {
 func DeepCopyHeader(header http.Header) http.Header {
 	headerByte, err := json.Marshal(header)
 	if err != nil {
-		log.LOGGER.Errorf("faile to marshal header, error:%+v", err)
+		klog.Errorf("faile to marshal header, error:%+v", err)
 		return nil
 	}
 
 	dstHeader := make(http.Header)
 	err = json.Unmarshal(headerByte, &dstHeader)
 	if err != nil {
-		log.LOGGER.Errorf("failed to unmarshal header, error:%+v", err)
+		klog.Errorf("failed to unmarshal header, error:%+v", err)
 		return nil
 	}
 	return dstHeader
@@ -67,7 +66,7 @@ func (c *Connection) ConnRecieve(){
 	case wstype.UseTypeStream:
 		go c.handleRawData()
 	case wstype.UseTypeShare:	
-		log.Warnf("don't support share in websocket")	
+		klog.Warnf("don't support share in websocket")	
 	}
 }
 
@@ -78,7 +77,7 @@ func (c *Connection) handleMessage(){
 		err := c.unpackPackageAndDecode(msg)		
 		if err != nil {
 			if err != io.EOF {
-				log.Errorf("failed to read message, error: %+v", err)
+				klog.Errorf("failed to read message, error: %+v", err)
 			}
 			c.State.State = wstype.StatDisconnected
 			c.Conn.Close()
@@ -105,7 +104,7 @@ func (c *Connection) handleMessage(){
 func (c *Connection) unpackPackageAndDecode(msg *model.Message) error {
 	rawData, err := packer.NewReader(c).Read()
 	if err != nil {
-		log.Errorf("failed to read, error: %+v", err)
+		klog.Errorf("failed to read, error: %+v", err)
 		return err
 	}
 
@@ -117,7 +116,7 @@ func (c *Connection) unpackPackageAndDecode(msg *model.Message) error {
 func (c *Connection) encodeAndPackPackage(msg *model.Message) error {
 	rawData, err := translator.NewTransCoding().Encode(msg)
 	if err != nil {
-		log.Errorf("failed to Encode, error: %+v", err)
+		klog.Errorf("failed to Encode, error: %+v", err)
 		return err
 	}
 
@@ -131,7 +130,7 @@ func (c *Connection) Read(p []byte) (int, error){
 	_, msgData, err := c.Conn.ReadMessage()
 	if err != nil {
 		if err != io.EOF {
-			log.Errorf("failed to read data, error: %+v", err)
+			klog.Errorf("failed to read data, error: %+v", err)
 		}
 		return len(msgData), err
 	}
@@ -144,7 +143,7 @@ func (c *Connection) Read(p []byte) (int, error){
 func (c *Connection) Write(p []byte) (int, error) {
 	err := c.Conn.WriteMessage(websocket.BinaryMessage, p)
 	if err != nil {
-		log.Errorf("write websocket message error: %+v", err)
+		klog.Errorf("write websocket message error: %+v", err)
 		return len(p), err
 	}
 
@@ -161,7 +160,7 @@ func (c *Connection) filterControlMessage (msg *model.Message) bool {
 //Stream data from socket (raw data)
 func (c *Connection) handleRawData(){
 	if c.Consumer == nil {
-		log.Errorf("bad consumer for raw data!")
+		klog.Errorf("bad consumer for raw data!")
 		return 
 	}
 
@@ -172,7 +171,7 @@ func (c *Connection) handleRawData(){
 	//Read the raw data
 	_, err := io.Copy(c.Consumer, c)
 	if err != nil {
-		log.Errorf("failed to copy data, error:", err)
+		klog.Errorf("failed to copy data, error:", err)
 		c.State.State = wstype.StatDisconnected
 		c.Conn.Close()
 		return
