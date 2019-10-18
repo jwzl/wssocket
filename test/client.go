@@ -46,7 +46,12 @@ func main() {
 	klog.Infof("Connect to the server...")
 	err = wsClient.Connect("wss://127.0.0.1:443/")
 	if err != nil {
-		log.Infof("Connect failed, %v", err)
+		klog.Infof("Connect failed, %v", err)
 		return
+	}
+	
+        	
+	for {
+	    time.Sleep(time.Second * 1)
 	}
 }

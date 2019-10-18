@@ -2,19 +2,14 @@ package server
 
 import (
 	"log"
-	"io"	
 	"os"
-	"fmt"
-	"net"
-	"time"
+	"sync"
 	"net/http"
 	"k8s.io/klog"
 
 	"github.com/gorilla/websocket"
-	wstype "github.com/jwzl/wssocket/types"	
-	"github.com/jwzl/wssocket/model"	
-	"github.com/jwzl/wssocket/packer"	
-	"github.com/jwzl/wssocket/translator"	
+	"github.com/jwzl/wssocket/conn"
+	wstype "github.com/jwzl/wssocket/types"
 )
 
 type WSServer struct {
@@ -36,7 +31,7 @@ func NewWSServer(opts Server) *WSServer {
 		server:		&server,
 		cmgr:  &ConnectionManager{
 			ConnKey: getDefaultConnKey,
-		}
+		},
 	}
 
 	//register a http route handle.
@@ -111,7 +106,7 @@ func (wss *WSServer) Close() error {
 }
 
 //Simple Connection manager
-type ConnectionKey  func(connection conn.Connection)string
+type ConnectionKey  func(connection *conn.Connection)string
 type ConnectionManager struct{
 	ConnKey  ConnectionKey
 	Connections sync.Map

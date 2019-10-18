@@ -6,13 +6,11 @@ import (
 	"fmt"	
 	"crypto/tls"
 	"crypto/x509"
-	"net"
 	"time"
 	"net/http"
 	
 	"github.com/jwzl/wssocket/conn"
-	wstype "github.com/jwzl/wssocket/types"	
-	"github.com/jwzl/wssocket/model"			
+	wstype "github.com/jwzl/wssocket/types"				
 )
 
 // the filter function before upgrading the http to websocket

@@ -66,7 +66,7 @@ func (c *Connection) ConnRecieve(){
 	case wstype.UseTypeStream:
 		go c.handleRawData()
 	case wstype.UseTypeShare:	
-		klog.Warnf("don't support share in websocket")	
+		klog.Warningf("don't support share in websocket")	
 	}
 }
 
