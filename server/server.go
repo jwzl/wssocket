@@ -116,60 +116,10 @@ func (s *Server) StartServer(cert, key string) error {
 	return err
 }
 
-//WriteMessage
-func (s *Server) WriteMessage(msg *model.Message)  error {
-	if s.server != nil {
-		return s.server.WriteMessage(msg)
-	}
-
-	return nil
+//For each connection.
+func (s *Server) RangeConnection(f func(key, value interface{}) bool){
+	s.server.cmgr.Range(f)
 }
-
-//SetReadDeadline
-func (s *Server) SetReadDeadline(t time.Time) error {
-	if s.server != nil {
-		return s.server.SetReadDeadline(t)
-	}
-
-	return nil
-}
-
-//SetWriteDeadline
-func (s *Server) SetWriteDeadline(t time.Time) error {
-	if s.server != nil {
-		return s.server.SetWriteDeadline(t)
-	}
-
-	return nil
-}
-
-// RemoteAddr
-func (s *Server) RemoteAddr() net.Addr {
-	if s.server != nil {
-		return s.server.RemoteAddr()
-	}
-
-	return nil
-}
-
-// LocalAddr
-func (s *Server) LocalAddr() net.Addr {
-	if s.server != nil {
-		return s.server.LocalAddr()
-	}
-
-	return nil
-}
-
-//CloseConnection
-func (s *Server) CloseConnection() error {
-	if s.server != nil {
-		return s.server.CloseConnection()
-	}
-
-	return nil
-}
-
 // Close
 func (s *Server) Close() error {
 	if s.server != nil {
