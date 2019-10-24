@@ -18,14 +18,31 @@ func NewTransCoding() *MessageTransCoding {
 
 func (mtc *MessageTransCoding) protomodel(proMsg *message.Message, modelMsg *model.Message) error {
 	modelMsg.FillBody(proMsg.Content)
-	modelMsg.Header.ID = proMsg.Header.ID
-	modelMsg.Header.MessageType = proMsg.Header.MessageType
 
+	modelMsg.Header.ID = proMsg.Header.ID
+	modelMsg.Header.Type = proMsg.Header.Type
+	modelMsg.Header.Timestamp = proMsg.Header.Timestamp
+	modelMsg.Header.Tag  = proMsg.Header.Tag 
+
+	modelMsg.Router.Source = proMsg.Router.Source
+	modelMsg.Router.Group = proMsg.Router.Group
+	modelMsg.Router.Target = proMsg.Router.Target
+	modelMsg.Router.Operation = proMsg.Router.Operation
+	modelMsg.Router.Resource = proMsg.Router.Resource 
 	return nil
 }
 func (mtc *MessageTransCoding) modeltopro(modelMsg *model.Message, proMsg *message.Message) error {
 	proMsg.Header.ID = modelMsg.Header.ID
-	proMsg.Header.MessageType = modelMsg.Header.MessageType
+	proMsg.Header.Type = modelMsg.Header.Type
+	proMsg.Header.Timestamp = modelMsg.Header.Timestamp
+	proMsg.Header.Tag  = modelMsg.Header.Tag
+
+	//Router
+	proMsg.Router.Source = modelMsg.Router.Source
+	proMsg.Router.Group = modelMsg.Router.Group
+	proMsg.Router.Target = modelMsg.Router.Target
+	proMsg.Router.Operation = modelMsg.Router.Operation
+	proMsg.Router.Resource = modelMsg.Router.Resource 
 
 	if content := modelMsg.GetContent(); content!= nil {
 		switch content.(type) {

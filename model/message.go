@@ -12,7 +12,7 @@ type MessageHeader struct {
 	// the time of creating
 	Timestamp int64 `json:"timestamp,omitempty"`
 	//tag for other need
-	Tag	 map[string]string `json:"tag,omitempty"`	
+	Tag	 string  `json:"tag,omitempty"`	
 }
 
 //MessageRoute contains structure of message

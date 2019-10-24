@@ -6,10 +6,28 @@ message MessageHeader {
     // the message id
     string ID = 1;
     // message type
-    string MessageType = 2;
+    string Type = 2;
+	// the time of creating
+	int64  Timestamp =3;
+	// tag for other need
+	string  Tag = 4;
+}  
+
+message MessageRoute {
+    // where the message come from
+    string Source = 1;
+    // where the message will broadcasted to
+    string Group = 2;
+	// where the message come to
+	string Target =3;
+	// what's the operation on resource
+	string Operation =4;
+	//what's the resource want to operate
+	string Resource =5; 	
 }
 
 message Message {
     MessageHeader header = 1;
-    bytes Content = 2;
+	MessageRoute  Router = 2;
+    bytes Content = 3;
 }
