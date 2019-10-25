@@ -105,8 +105,7 @@ func (msg *Message) UpdateID() *Message {
 }
 
 // BuildHeader builds message header. You can also use for updating message header
-func (msg *Message) BuildHeader(ID, typ string, timestamp int64) *Message {
-	msg.Header.ID = ID
+func (msg *Message) BuildHeader(typ string, timestamp int64) *Message {
 	msg.Header.Type = typ
 	msg.Header.Timestamp = timestamp
 	return msg
