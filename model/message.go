@@ -63,6 +63,17 @@ func (msg *Message) SetRoute(source, group, target string) *Message {
 	return msg
 }
 
+//SetTag set message tags
+func (msg *Message) SetTag(tag string) *Message {
+	msg.Header.Tag = tag
+	return msg
+}
+
+//GetTag get message tags
+func (msg *Message) GetTag() string {
+	return msg.Header.Tag
+}
+
 //GetTimestamp returns message timestamp
 func (msg *Message) GetTimestamp() int64 {
 	return msg.Header.Timestamp
