@@ -92,6 +92,7 @@ func (mtc *MessageTransCoding) Encode(msg interface{}) ([]byte, error) {
 
 	protoMsg := message.Message{
 		Header: &message.MessageHeader{},
+		Router: &message.MessageRoute{},
 	}
 
 	err := mtc.modeltopro(modelMsg, &protoMsg)
