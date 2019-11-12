@@ -1,15 +1,17 @@
 package conn
 
 import(
-	"crypto/x509"
-	"encoding/json"
 	"io"	
 	"net"
 	"time"
+	"errors"
 	"net/http"
 	"k8s.io/klog"
+	"crypto/x509"
+	"encoding/json"
 	"github.com/gorilla/websocket"
 	wstype "github.com/jwzl/wssocket/types"
+	"github.com/jwzl/wssocket/fifo"
 	"github.com/jwzl/wssocket/model"
 	"github.com/jwzl/wssocket/packer"	
 	"github.com/jwzl/wssocket/translator"
@@ -39,6 +41,8 @@ type Connection struct {
 	State  *ConnectionState
 	//websocket Connection
 	Conn *websocket.Conn
+	// message fifo.
+	MessageFifo  *fifo.MessageFifo	
 }
 
 //Deep Copy http header.
@@ -91,7 +95,13 @@ func (c *Connection) handleMessage(){
 
 		// to check whether the message is a response or not
 
-		// put the messages into fifo and wait for reading
+		// Put the messages into fifo and wait for reading
+		if !c.AutoRoute {
+			if c.MessageFifo != nil {
+				c.MessageFifo.Write(msg)
+				continue
+			}
+		}
 
 		//let c handler to process message.
 		if c.Handler != nil && c.Handler.MessageProcess != nil {
@@ -185,6 +195,14 @@ func (c *Connection) WriteMessage(msg *model.Message) error {
 	return c.encodeAndPackPackage(msg)
 }
 
+// ReadMessage read the message from fifo.
+func (c *Connection) ReadMessage() (*model.Message, error){
+	if c.MessageFifo != nil {
+		return c.MessageFifo.Read()
+	}
+
+	return nil, errors.New("message fifo is nil.")	
+}
 // Set ReadDeadline 
 func (c *Connection) SetReadDeadline(t time.Time) error {
 	return c.Conn.SetReadDeadline(t)

@@ -9,6 +9,7 @@ import (
 	"k8s.io/klog"
 	"github.com/jwzl/wssocket/conn"
 	"github.com/gorilla/websocket"
+	"github.com/jwzl/wssocket/fifo"
 	wstype "github.com/jwzl/wssocket/types"
 )
 
@@ -42,6 +43,12 @@ func (wsc *WSClient) Connect(serverAddr string, requestHeader http.Header)(*conn
 	if err == nil {
 		klog.Infof("dialer connect %s successful", serverAddr)
 
+		// create message fifo if AutoRoute == false.
+		var msgFifo  *fifo.MessageFifo
+		if !wsc.options.AutoRoute {
+			msgFifo = fifo.NewMessageFifo(0)
+		}	
+
 		connection := &conn.Connection{
 			ConnUse: wsc.options.ConnUse,
 			Consumer:  wsc.options.Consumer,
@@ -52,6 +59,7 @@ func (wsc *WSClient) Connect(serverAddr string, requestHeader http.Header)(*conn
 				Header: conn.DeepCopyHeader(header),	
 			},
 			Conn: wsConn, 
+			MessageFifo: msgFifo,
 		}
 		//call onconnect callback
 		if wsc.options.Connected != nil {

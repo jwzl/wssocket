@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/jwzl/wssocket/conn"
+	"github.com/jwzl/wssocket/fifo"
 	wstype "github.com/jwzl/wssocket/types"
 )
 
@@ -67,6 +68,13 @@ func (wss *WSServer) ServerHTTP(w http.ResponseWriter, r *http.Request){
 	if WsConn == nil {
 		return	
 	}
+	
+	// create message fifo if AutoRoute == false.
+	var msgFifo  *fifo.MessageFifo
+	if !wss.options.AutoRoute {
+		msgFifo = fifo.NewMessageFifo(0)
+	}	
+
 	// Create a connection
 	connection := &conn.Connection{
 		ConnUse: string(r.Header.Get("ConnectionUse")),
@@ -78,6 +86,7 @@ func (wss *WSServer) ServerHTTP(w http.ResponseWriter, r *http.Request){
 			Header: conn.DeepCopyHeader(r.Header),	
 		},
 		Conn: WsConn, 
+		MessageFifo: msgFifo,
 	}
 	
 	// Connection callback.
