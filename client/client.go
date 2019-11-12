@@ -81,6 +81,10 @@ func CreateTLSConfig(certFile, keyFile string) (*tls.Config, error) {
 func (c *Client) WriteMessage(msg *model.Message) error {
 	return c.conn.WriteMessage(msg)
 }
+// ReadMessage
+func (c *Client) ReadMessage() (*model.Message, error){
+	return c.conn.ReadMessage()
+}
 // SetReadDeadline
 func (c *Client) SetReadDeadline(t time.Time) error {
 	return c.conn.SetReadDeadline(t)
