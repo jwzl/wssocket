@@ -12,5 +12,3 @@ const (
 	// connection only can be used for message and stream
 	UseTypeShare string = "shr"	
 )
-
-type ConnNotify func (interface{}) 
