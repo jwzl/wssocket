@@ -9,8 +9,7 @@ import (
 	"time"
 	"net/http"
 	
-	"github.com/jwzl/wssocket/conn"
-	wstype "github.com/jwzl/wssocket/types"				
+	"github.com/jwzl/wssocket/conn"			
 )
 
 // the filter function before upgrading the http to websocket
