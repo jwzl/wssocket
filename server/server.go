@@ -15,6 +15,7 @@ import (
 
 // the filter function before upgrading the http to websocket
 type WSFilterFunc func(w http.ResponseWriter, r *http.Request) bool
+type ConnNotifyFunc func (connection *conn.Connection) 
 // Server 
 type Server struct {
 	// Addr optionally specifies the TCP address for the server to listen on,
@@ -24,7 +25,7 @@ type Server struct {
 	Addr             string
 	// When http recieive the request from client, then it 
 	// means that connection is created.
-	ConnNotify       wstype.ConnNotify		//optional.
+	ConnNotify       ConnNotifyFunc		//optional.
 	AutoRoute        bool
 	//HandShake timeout
 	HandshakeTimeout time.Duration
