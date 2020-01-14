@@ -1,8 +1,8 @@
 #!/bin/bash
 
-CAPATH=${CAPATH:-/etc/edgedev/ca}
+CAPATH=${CAPATH:-/etc/dgtwin/ca}
 CASUBJECT=${CASUBJECT:-/C=CN/ST=Shaanxi/L=Xian/O=EDGEDEV/CN=edgedev.io}
-CERTPATH=${CERTPATH:-/etc/edgedev/certs}
+CERTPATH=${CERTPATH:-/etc/dgtwin/certs}
 CERTUBJECT=${CASUBJECT}
 PASS_PHRASE="pass:cnj1990@sina.com.cn"
 #subj 指定证书信息（国家、省份、城市、公司、CN（common name）管理员邮箱）
